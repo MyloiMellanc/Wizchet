@@ -15,7 +15,7 @@ end
 
 
 function TurnState:isEnded()
-    if self.current_turn == self.max_turn then
+    if self.current_turn > self.max_turn then
         return true
     end
     
@@ -89,6 +89,13 @@ function TurnState:draw()
     
     local player_position_x = self.position.x
     local player_position_y = self.position.y
+    
+    if self:isEnded() == true then
+        popStyle()
+        return
+    end
+    
+    
     
     if self.current_player == 1 then
         player_position_x = player_position_x - self.text_diff

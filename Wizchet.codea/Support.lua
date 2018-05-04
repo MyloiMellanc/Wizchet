@@ -6,7 +6,7 @@ FAILED = -1
 TILE_IS_NOT_TOGGLED = -1
 
 --used in Turn State
-MAX_TURN = -1
+MAX_TURN = 20
 
 --Turn State
 --턴 페이즈 상태
@@ -17,7 +17,8 @@ TURN_PHASE = {MAIN = 1,
 DEFAULT_MAX_MANA = 100
 DEFAULT_STARTING_MANA = 10
 
-
+--플레이어별 지속가능한 필라설치 한계
+DEFAULT_MAX_PILLAR_SET = 7
 
 ----------------------------------------------------
 --수급 버튼의 사용 용도
@@ -32,8 +33,7 @@ SUPPLY_BUTTON = {SUPPLY = 1,
 --어빌리티 사용가능한 턴 상태
 ABILITY_PHASE = {MAIN = 1,
                  CONFLICT = 2 }
-                 --MAIN_AND_CONFLICT = 3 
-                    --걍 나중에 오브젝트 속성을 배열로 만들어...
+                    
 
 
 --Ability Return Type

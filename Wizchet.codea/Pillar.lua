@@ -1,8 +1,8 @@
-Spell = class()
+Pillar = class()
 
-function Spell:init(player, spell_name)
+function Pillar:init(player, pillar_name)
     self.player = player
-    self.name = spell_name
+    self.name = pillar_name
     
     self:initAbility()
     
@@ -22,29 +22,30 @@ function Spell:init(player, spell_name)
 end
 
 
-function Spell:initAbility()
-    local spell = getAbility(self.name)
+function Pillar:initAbility()
+    local pillar = getAbility(self.name)
     
-    self.sprite = spell.sprite
-    self.content = spell.content
-    self.ability_type = spell.type
-    self.ability_phase = spell.phase
+    self.sprite = pillar.sprite
+    self.content = pillar.content
+    self.ability_type = pillar.type
+    self.ability_phase = pillar.phase
     
-    self.cost = spell.cost
+    self.cost = pillar.cost
     
     self.ability_color = setTypeColor(self.ability_type)
 end
 
 
-function Spell:setPosition(position)
+function Pillar:setPosition(position)
     self.natural_position_x = position.x
     self.natural_position_y = position.y
     self.position_x = position.x
-    self.position_y = position.y 
+    self.position_y = position.y
 end
 
 
-function Spell:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_set)
+function Pillar:updateActivation(turn_player, turn_phase, remain_mana, 
+                                                    pillar_is_set, set_count)
     if self.player ~= turn_player then
         self.activation = false
         return
@@ -54,15 +55,21 @@ function Spell:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_
     elseif self.cost > remain_mana then
         self.activation = false
         return
+    elseif pillar_is_set == true then
+        self.activation = false
+        return
+    elseif set_count >= DEFAULT_MAX_PILLAR_SET then
+        self.activation = false
+        return
     end
-
+    
     
     self.activation = true
     
 end
 
 
-function Spell:draw()
+function Pillar:draw()
     --배경 컬러 드로잉은 내츄럴 포지션으로 할것
     
     pushStyle()
@@ -81,16 +88,17 @@ function Spell:draw()
     spriteMode(CENTER)
     sprite(self.sprite, self.position_x,self.position_y)
     
-    fill(0, 0, 0, 255)
+    local pillar_count = game_player[self.player].pillar_count
+    fill(255, 0, 0, 255)
     fontSize(30)
-    text(self.cost, self.natural_position_x, self.natural_position_y - 20)
+    text(pillar_count, self.natural_position_x, self.natural_position_y - 20)
     
     popStyle()
     
 end
 
 
-function Spell:isTouched(x, y)
+function Pillar:isTouched(x, y)
     local diff_x = math.abs(self.position_x - x)
     local diff_y = math.abs(self.position_y - y)
         
@@ -106,7 +114,7 @@ function Spell:isTouched(x, y)
 end
 
 
-function Spell:touched(touch)
+function Pillar:touched(touch)
     --BEGAN : 범위 파악, 토글 온
     --MOVING : 토글되어있을시 포지션 움직임
     --ENDED : 토글 오프, 내추럴 포지션으로 돌리기
@@ -116,13 +124,13 @@ function Spell:touched(touch)
         if touch.state == BEGAN then
             if self:isTouched(touch.x, touch.y) == true then
                 self.toggle = true
-            end    
-            
+            end
+              
         elseif touch.state == MOVING then
             if self.toggle == true then
                 self.position_x = touch.x
                 self.position_y = touch.y
-            end    
+            end
             
         elseif touch.state == ENDED then
             if self.toggle == true then
@@ -134,6 +142,6 @@ function Spell:touched(touch)
             self.position_x = self.natural_position_x
             self.position_y = self.natural_position_y
             
-        end  
+        end
     end
 end

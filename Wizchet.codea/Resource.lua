@@ -20,6 +20,7 @@ end
 function Resource:spendMana(mana)
     if self.current_mana < mana then
         print("MANA SYSTEM ERROR!!")
+        self.current_mana = 0
     else
         self.current_mana = self.current_mana - mana
     end

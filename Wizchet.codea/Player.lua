@@ -4,6 +4,7 @@ function Player:init(player)
     self.player = player
     
     self.pillar_is_set = false
+    self.pillar_count = 0
     
     self.supply_button = SupplyButton(player)
     self.resource = Resource(player)
@@ -21,6 +22,10 @@ function Player:isPillarSet()
     return self.pillar_is_set
 end
 
+function Player:changePillarCount(count)
+    self.pillar_count = self.pillar_count + count
+end
+
 function Player:spendItem(item_name)
     self.deck:spendItem(item_name)
 end
@@ -31,8 +36,14 @@ function Player:checkActivation(turn_player, turn_phase)
     self.supply_button:checkActivation(turn_player, turn_phase)
     
     local remain_mana = self.resource:getCurrentMana()
-    self.deck:checkActivation
-                    (turn_player, turn_phase, remain_mana, self.pillar_is_set)
+    self.deck:checkActivation(turn_player, turn_phase, remain_mana, self.pillar_is_set, self.pillar_count)
+end
+
+
+function Player:endGame()
+    self.supply_button:checkActivation(FAILED, FAILED)
+    
+    self.deck:checkActivation(FAILED, FAILED, FAILED, FAILED, FAILED)
 end
 
 

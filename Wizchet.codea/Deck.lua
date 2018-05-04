@@ -25,9 +25,9 @@ end
 
 
 function Deck:checkActivation
-                    (turn_player, turn_phase, remain_mana, pillar_is_set)
+                    (turn_player, turn_phase, remain_mana, pillar_is_set, set_count)
     for k,v in pairs(self.deck_contents) do
-        v:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_set)
+        v:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_set, set_count)
     end
 end
 

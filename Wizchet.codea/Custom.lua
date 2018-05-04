@@ -76,7 +76,7 @@ function initSpellLibrary()
     purify_spell_1.type = ABILITY_TYPE.MAIN
     purify_spell_1.phase = ABILITY_PHASE.MAIN
     purify_spell_1.func = effect_purify_1
-    purify_spell_1.cost = 15
+    purify_spell_1.cost = 30
     
     table.insert(library, attack_spell_1)
     table.insert(library, moving_spell_1)

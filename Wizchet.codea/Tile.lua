@@ -42,6 +42,12 @@ end
 
 
 function Tile:clearThisTileObject()
+    
+    --필라가 파괴되었을 경우, 해당 플레이어의 필라 카운트를 감소
+    if self.tile_object_type == TILE_OBJECT_TYPE.PILLAR then
+        game_player[self.tile_object_player]:changePillarCount(-1)
+    end
+    
     self.tile_object_type = TILE_OBJECT_TYPE.NOT_EXIST
     self.tile_object_name = nil
     self.tile_object_player = OWNER.NEUTRAL

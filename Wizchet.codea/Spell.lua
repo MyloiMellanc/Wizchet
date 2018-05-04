@@ -1,8 +1,8 @@
-Item = class()
+Spell = class()
 
-function Item:init(player, item_name)
+function Spell:init(player, spell_name)
     self.player = player
-    self.name = item_name
+    self.name = spell_name
     
     self:initAbility()
     
@@ -22,30 +22,29 @@ function Item:init(player, item_name)
 end
 
 
-function Item:initAbility()
-    local item = getAbility(self.name)
+function Spell:initAbility()
+    local spell = getAbility(self.name)
     
-    self.sprite = item.sprite
-    self.content = item.content
-    self.ability_type = item.type
-    self.ability_phase = item.phase
+    self.sprite = spell.sprite
+    self.content = spell.content
+    self.ability_type = spell.type
+    self.ability_phase = spell.phase
     
-    self.item_count = item.count
-    self.cost = item.cost
+    self.cost = spell.cost
     
     self.ability_color = setTypeColor(self.ability_type)
 end
 
 
-function Item:setPosition(position)
+function Spell:setPosition(position)
     self.natural_position_x = position.x
     self.natural_position_y = position.y
     self.position_x = position.x
-    self.position_y = position.y
+    self.position_y = position.y 
 end
 
 
-function Item:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_set)
+function Spell:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_set, set_count)
     if self.player ~= turn_player then
         self.activation = false
         return
@@ -56,14 +55,14 @@ function Item:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_s
         self.activation = false
         return
     end
-    
+
     
     self.activation = true
     
 end
 
 
-function Item:draw()
+function Spell:draw()
     --배경 컬러 드로잉은 내츄럴 포지션으로 할것
     
     pushStyle()
@@ -82,16 +81,16 @@ function Item:draw()
     spriteMode(CENTER)
     sprite(self.sprite, self.position_x,self.position_y)
     
-    fill(255, 8, 0, 255)
+    fill(0, 0, 255, 255)
     fontSize(30)
-    text(self.item_count, self.natural_position_x, self.natural_position_y - 20)
+    text(self.cost, self.natural_position_x, self.natural_position_y - 20)
     
     popStyle()
     
 end
 
 
-function Item:isTouched(x, y)
+function Spell:isTouched(x, y)
     local diff_x = math.abs(self.position_x - x)
     local diff_y = math.abs(self.position_y - y)
         
@@ -107,7 +106,7 @@ function Item:isTouched(x, y)
 end
 
 
-function Item:touched(touch)
+function Spell:touched(touch)
     --BEGAN : 범위 파악, 토글 온
     --MOVING : 토글되어있을시 포지션 움직임
     --ENDED : 토글 오프, 내추럴 포지션으로 돌리기
@@ -117,13 +116,13 @@ function Item:touched(touch)
         if touch.state == BEGAN then
             if self:isTouched(touch.x, touch.y) == true then
                 self.toggle = true
-            end     
+            end    
             
         elseif touch.state == MOVING then
             if self.toggle == true then
                 self.position_x = touch.x
                 self.position_y = touch.y
-            end      
+            end    
             
         elseif touch.state == ENDED then
             if self.toggle == true then
@@ -135,6 +134,6 @@ function Item:touched(touch)
             self.position_x = self.natural_position_x
             self.position_y = self.natural_position_y
             
-        end
+        end  
     end
 end

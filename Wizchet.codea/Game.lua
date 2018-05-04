@@ -13,6 +13,9 @@ function Game:init(gameboard, gameplayer, turnstate, stack)
     
 end
 
+function Game:startGame()
+    self.game_player[1]:checkActivation(1, TURN_PHASE.MAIN)
+end
 
 function Game:updateScore()
     self.score_board:updateScore(self.game_board)
@@ -73,6 +76,10 @@ function Game:activateAbility(ability_name)
     --발동 및 리턴타입 받기
     local return_type = ability.func(current_player, tile_number)
     
+    --필라 설치일 경우에는 플레이어 카운트를 증가
+    if ability.type == ABILITY_TYPE.PILLAR then
+        self.game_player[current_player]:changePillarCount(1)
+    end
     
     return return_type
     
@@ -90,7 +97,7 @@ function Game:finishEvent(return_type)
         self.stack:resolve()
         self.turn_state:resolve()
         
-    --Conflict 없이 턴 넘기기    
+    --턴 전환은 Conflict 없이 턴 넘기기    
     elseif return_type == RETURN_TYPE.NEXT_TURN then
         self.stack:resolve()
         self.game_player[1]:setPillarSet(false)
@@ -113,6 +120,15 @@ function Game:finishEvent(return_type)
     self:updateScore()
     
     
+    --게임 종료 판단
+    if self.turn_state:isEnded() == true then
+        self.game_text = "GAME OVER"
+        self.game_player[1]:endGame()
+        self.game_player[2]:endGame()
+        return
+    end
+    
+    
     --플레이어의 Activation Check 수행
     local current_player = self.turn_state:getCurrentPlayer()
     local current_phase = self.turn_state:getCurrentPhase()
@@ -125,8 +141,7 @@ end
 
 
 function Game:pushAbilityEvent(ability_name)
-    --유효여부를 판단한 뒤 확인되면 가동
-    
+    --유효여부 판단
     local available = self:checkAbilityEvent(ability_name)
     
     if available == false then
@@ -134,14 +149,14 @@ function Game:pushAbilityEvent(ability_name)
         return
     end
     
-    
+    --효과 삽입
     local return_type = self:activateAbility(ability_name)
     if return_type == FAILED then
         print("Return Type Error.")
         return
     end
     
-    
+    --실제 효과 수행
     self:finishEvent(return_type)
     
 end

@@ -16,7 +16,6 @@ function setup()
     game_board:initBoard()
     
     --Turn State
-    local MAX_TURN = 50
     turn_state = TurnState(MAX_TURN)
     
     --Player2개
@@ -37,9 +36,7 @@ function setup()
     --Game
     game = Game(game_board, game_player, turn_state, stack)
     
-    
-    --테스트용
-    game_player[1]:checkActivation(1, TURN_PHASE.MAIN)
+    game:startGame()
 end
 
 

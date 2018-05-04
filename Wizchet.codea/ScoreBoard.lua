@@ -46,7 +46,8 @@ function ScoreBoard:draw()
         fill(255, 0, 0, 255)
         fontSize(self.font_size)
         text(self.player_score[i], self.player_position[i].x, 
-                                                self.player_position[i].y - 35)
+                                             self.player_position[i].y - 35)
+        
     end
     
     popStyle()

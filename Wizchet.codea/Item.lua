@@ -1,8 +1,8 @@
-Pillar = class()
+Item = class()
 
-function Pillar:init(player, pillar_name)
+function Item:init(player, item_name)
     self.player = player
-    self.name = pillar_name
+    self.name = item_name
     
     self:initAbility()
     
@@ -22,21 +22,22 @@ function Pillar:init(player, pillar_name)
 end
 
 
-function Pillar:initAbility()
-    local pillar = getAbility(self.name)
+function Item:initAbility()
+    local item = getAbility(self.name)
     
-    self.sprite = pillar.sprite
-    self.content = pillar.content
-    self.ability_type = pillar.type
-    self.ability_phase = pillar.phase
+    self.sprite = item.sprite
+    self.content = item.content
+    self.ability_type = item.type
+    self.ability_phase = item.phase
     
-    self.cost = pillar.cost
+    self.item_count = item.count
+    self.cost = item.cost
     
     self.ability_color = setTypeColor(self.ability_type)
 end
 
 
-function Pillar:setPosition(position)
+function Item:setPosition(position)
     self.natural_position_x = position.x
     self.natural_position_y = position.y
     self.position_x = position.x
@@ -44,8 +45,7 @@ function Pillar:setPosition(position)
 end
 
 
-function Pillar:updateActivation(turn_player, turn_phase, remain_mana, 
-                                                                pillar_is_set)
+function Item:updateActivation(turn_player, turn_phase, remain_mana, pillar_is_set, set_count)
     if self.player ~= turn_player then
         self.activation = false
         return
@@ -53,9 +53,6 @@ function Pillar:updateActivation(turn_player, turn_phase, remain_mana,
         self.activation = false
         return
     elseif self.cost > remain_mana then
-        self.activation = false
-        return
-    elseif pillar_is_set == true then
         self.activation = false
         return
     end
@@ -66,7 +63,7 @@ function Pillar:updateActivation(turn_player, turn_phase, remain_mana,
 end
 
 
-function Pillar:draw()
+function Item:draw()
     --배경 컬러 드로잉은 내츄럴 포지션으로 할것
     
     pushStyle()
@@ -85,16 +82,16 @@ function Pillar:draw()
     spriteMode(CENTER)
     sprite(self.sprite, self.position_x,self.position_y)
     
-    fill(0, 0, 0, 255)
+    fill(255, 8, 0, 255)
     fontSize(30)
-    text(self.cost, self.natural_position_x, self.natural_position_y - 20)
+    text(self.item_count, self.natural_position_x, self.natural_position_y - 20)
     
     popStyle()
     
 end
 
 
-function Pillar:isTouched(x, y)
+function Item:isTouched(x, y)
     local diff_x = math.abs(self.position_x - x)
     local diff_y = math.abs(self.position_y - y)
         
@@ -110,7 +107,7 @@ function Pillar:isTouched(x, y)
 end
 
 
-function Pillar:touched(touch)
+function Item:touched(touch)
     --BEGAN : 범위 파악, 토글 온
     --MOVING : 토글되어있을시 포지션 움직임
     --ENDED : 토글 오프, 내추럴 포지션으로 돌리기
@@ -120,13 +117,13 @@ function Pillar:touched(touch)
         if touch.state == BEGAN then
             if self:isTouched(touch.x, touch.y) == true then
                 self.toggle = true
-            end
-              
+            end     
+            
         elseif touch.state == MOVING then
             if self.toggle == true then
                 self.position_x = touch.x
                 self.position_y = touch.y
-            end
+            end      
             
         elseif touch.state == ENDED then
             if self.toggle == true then

@@ -43,7 +43,6 @@ function effect_pillar_1(player, tile_number)
         if ((tile.player == OWNER.NEUTRAL) or (tile.player == player)) and 
                     (tile.tile_object_type == TILE_OBJECT_TYPE.NOT_EXIST) then
             
-            --tile:ownThisTile(player)
             tile:setTileObject(player, TILE_OBJECT_TYPE.PILLAR, 
                                                         "Pillar - Default 1")
         
